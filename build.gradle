@@ -20,6 +20,12 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter:2.5.4'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.5.4'
+    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'org.springframework.data:spring-data-jpa:2.5.4'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.5.4'
+    implementation 'org.hibernate:hibernate-core:5.5.7.Final'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     compileOnly 'org.projectlombok:lombok:1.18.20'
     runtimeOnly 'com.h2database:h2:1.4.200'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
