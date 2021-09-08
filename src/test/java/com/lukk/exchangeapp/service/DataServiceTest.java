@@ -50,7 +50,6 @@ class DataServiceTest {
         doReturn("testKey").when(propertyConfig).getAccessKey();
         doReturn("testSymbols").when(propertyConfig).getSymbols();
         doReturn("testBase").when(propertyConfig).getBase();
-
     }
 
     @Test
