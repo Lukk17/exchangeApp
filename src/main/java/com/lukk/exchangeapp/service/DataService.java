@@ -67,7 +67,7 @@ public class DataService {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         List<Rate> rates;
 
-        if (dateData.contains(":")) {
+        if (isRangeOfDates(dateData)) {
             String[] dateRange = dateData.split(":");
 
             Date startDate = formatter.parse(dateRange[0]);
@@ -84,24 +84,53 @@ public class DataService {
     }
 
     /**
+     * Check if given String is single date or range of dates.
+     *
+     * @param dateData to be checked.
+     * @return {@code true} if it is range of dates, otherwise {@code false}.
+     */
+    private boolean isRangeOfDates(String dateData) {
+        return dateData.contains(":");
+    }
+
+    /**
      * Send REST request to external exchange service for current rates.
      *
      * @return Response with rate data.
      */
     private RatesResponse getDataFromExchange() {
         Gson gson = new Gson();
+        HttpEntity<String> entity = buildEntity();
+        String url = buildUrl();
+
+        ResponseEntity<String> response = rest.exchange(url, HttpMethod.GET, entity, String.class);
+
+        return gson.fromJson(response.getBody(), RatesResponse.class);
+    }
+
+    /**
+     * Build Http Entity with only headers.
+     *
+     * @return Http Entity
+     */
+    private HttpEntity<String> buildEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return new HttpEntity<>(headers);
+    }
 
+    /**
+     * Build URL with parameters from properties.
+     *
+     * @return URL as String.
+     */
+    private String buildUrl() {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(propertyConfig.getUrl())
             .queryParam("access_key", propertyConfig.getAccessKey())
             .queryParam("symbols", propertyConfig.getSymbols())
             .queryParam("base", propertyConfig.getBase());
 
-        ResponseEntity<String> response = rest.exchange(uriBuilder.toUriString(), HttpMethod.GET, entity, String.class);
-
-        return gson.fromJson(response.getBody(), RatesResponse.class);
+        return uriBuilder.toUriString();
     }
 
     /**
